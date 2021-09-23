@@ -1,3 +1,3 @@
 export default {
-  navigationBarTitleText: '生成随机密码'
+  navigationBarTitleText: '很赞工具箱'
 }
