@@ -1,0 +1,9 @@
+{
+  "miniprogramRoot": "./",
+  "projectname": "awesome-tools",
+  "appid": "touristappid",
+  "setting": {
+    "es6": false,
+    "minified": false
+  }
+}
