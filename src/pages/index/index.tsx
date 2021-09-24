@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { View, Text } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import { AtGrid } from "taro-ui"
 import { AtGridItem } from 'taro-ui/types/grid'
 import Taro from '@tarojs/taro'
@@ -21,7 +21,7 @@ export default class Index extends Component<any, IndexState> {
             size: 30,
             value: 'lock'
           },
-          url: '../random-password-generation/index'
+          url: '/pages/random-password-generation/index'
         },
         {
           value: '设置',
@@ -29,7 +29,7 @@ export default class Index extends Component<any, IndexState> {
             size: 30,
             value: 'settings'
           },
-          url: '../settings/index'
+          url: '/pages/settings/index'
         }
       ]
     }
@@ -54,7 +54,12 @@ export default class Index extends Component<any, IndexState> {
   render() {
     return (
       <View className='index'>
-        <AtGrid data={this.state.data} onClick={this.handleClick.bind(this)} />
+        <View className='header'>
+          <View className='header__title'>很赞工具箱</View>
+        </View>
+        <View className='body'>
+          <AtGrid data={this.state.data} onClick={this.handleClick.bind(this)} />
+        </View>
       </View>
     )
   }

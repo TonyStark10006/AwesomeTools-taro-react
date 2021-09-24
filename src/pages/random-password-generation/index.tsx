@@ -264,9 +264,9 @@ export default class Index extends React.Component<any, IndexState> {
             {newPassword}
           </AtModalContent>
           <AtModalAction>
-            <Button onClick={this.closeModal.bind(this)}>取消</Button>
-            <Button onClick={this.handleGenOnceMore.bind(this)}>再来一次</Button>
-            <Button onClick={this.handleCopy.bind(this)}>复制</Button>
+            <Button className='modalButton' onClick={this.closeModal.bind(this)}>取消</Button>
+            <Button className='modalButton' onClick={this.handleGenOnceMore.bind(this)}>再来一次</Button>
+            <Button className='modalButton' onClick={this.handleCopy.bind(this)}>复制</Button>
           </AtModalAction>
         </AtModal>
       </View>
