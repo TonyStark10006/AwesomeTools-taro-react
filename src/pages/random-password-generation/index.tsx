@@ -1,7 +1,7 @@
 // import { Component } from 'react'
 import React from 'react'
-import { View, Text, ScrollView, Picker, CommonEvent, Button } from '@tarojs/components'
-import { AtList, AtListItem, AtCheckbox, AtButton, AtModal, AtModalContent, AtModalAction } from "taro-ui"
+import { View, ScrollView, Picker, CommonEvent, Button } from '@tarojs/components'
+import { AtList, AtListItem, AtCheckbox, AtButton, AtModal, AtModalContent, AtModalAction, AtInput } from "taro-ui"
 import Taro from '@tarojs/taro'
 import { CheckboxOption } from 'taro-ui/types/checkbox'
 import { cShowToast, cSetStorage, setPwdToClipBorad } from '@utils'
@@ -13,10 +13,13 @@ interface IndexState {
   checkboxOption: CheckboxOption<string>[]
   conditionsSelectedList: string[]
   windowHeight: number
-  pwdList: string[]
+  pwdList: { value: string, remark: string }[]
   newPassword: string
+  pwdRemark: string
   lengthSelectedValue: number
-  isModalOpened: boolean
+  isGenModalOpened: boolean
+  isModModalOpened: boolean
+  indexForModification: number
   // conditions: any[]
 }
 
@@ -55,7 +58,10 @@ export default class Index extends React.Component<any, IndexState> {
       pwdList: historyList.length != 0 ? historyList : [],
       newPassword: '',
       lengthSelectedValue: 0,
-      isModalOpened: false
+      isGenModalOpened: false,
+      isModModalOpened: false,
+      pwdRemark: '',
+      indexForModification: 0
     }
   }
 
@@ -107,6 +113,11 @@ export default class Index extends React.Component<any, IndexState> {
 
 
   private genRandomPassword(): void {
+    // document.getElementsByTagName('scroll-view')[0].setAttribute('scrollY', 'false')
+    // document.getElementsByTagName('scroll-view')[1].setAttribute('scrollY', 'false')
+    // document.getElementsByTagName('scroll-view')[2].setAttribute('show-scrollbar', 'false')
+    // console.log(document.getElementsByTagName('scroll-view'));
+
     if (this.state.conditionsSelectedList.length == 0) {
       cShowToast('请勾选密码组成条件')
       return
@@ -118,18 +129,18 @@ export default class Index extends React.Component<any, IndexState> {
 
     this.setState({
       newPassword: newPassword,
-      isModalOpened: true
+      isGenModalOpened: true
     })
   }
 
   private handleCopy(): void {
-    let { newPassword, pwdList } = this.state
+    let { newPassword, pwdRemark, pwdList } = this.state
     // 复制到粘贴板
     setPwdToClipBorad(newPassword)
     console.log(pwdList);
 
     // 写入到历史生成列表
-    pwdList.push(newPassword)
+    pwdList.push({ value: newPassword, remark: pwdRemark })
 
     // 写入到缓存
     cSetStorage('historyList', pwdList)
@@ -168,15 +179,44 @@ export default class Index extends React.Component<any, IndexState> {
 
   private handleListItemCopy(i: number): void {
     let { pwdList } = this.state
-    setPwdToClipBorad(pwdList[i])
+    setPwdToClipBorad(pwdList[i].value)
   }
 
-  private showRemarks(): void {
-    cShowToast('apple id')
+  private showRemarks(i: number): void {
+    let { pwdList } = this.state
+    let remark = pwdList[i].remark
+    remark != '' ? cShowToast(pwdList[i].remark) : cShowToast('么有备注')
   }
 
   private closeModal(): void {
-    this.setState({ isModalOpened: false })
+    this.setState({ isModModalOpened: false, isGenModalOpened: false, pwdRemark: '' })
+  }
+
+  private handleRemarkInput(value: string): void {
+    // TODO 
+    console.log(value);
+    this.setState({ pwdRemark: value })
+    // console.log(document.getElementById('pwd'))
+
+    // return value
+  }
+
+  private showModifyRemark(i: number): void {
+    let { pwdList } = this.state
+    this.setState({ pwdRemark: pwdList[i].remark, isModModalOpened: true, indexForModification: i })
+    console.log(pwdList[i].remark);
+  }
+
+  private handleModifyRemark(): void {
+    let { pwdRemark, pwdList, indexForModification } = this.state
+    // 写入到历史生成列表
+    pwdList[indexForModification].remark = pwdRemark
+
+    // 写入到缓存
+    cSetStorage('historyList', pwdList)
+
+    //关闭modal
+    this.closeModal()
   }
 
   private genList(): JSX.Element[] {
@@ -187,7 +227,11 @@ export default class Index extends React.Component<any, IndexState> {
       list[i] = (
         <View className='at-row' >
           <View className='at-col at-col-8'>
-            <Text onClick={this.showRemarks.bind(this)}>{pwdList[i]}</Text>
+            <View onClick={this.showRemarks.bind(this, i)}
+              onLongPress={this.showModifyRemark.bind(this, i)}
+            >
+              {pwdList[i].value}
+            </View>
           </View>
           <View className='at-col at-col-2' id={i.toString()}>
             <AtButton className='button' type='secondary' size='small' circle onClick={this.handleDelete.bind(this, i)}>
@@ -210,8 +254,9 @@ export default class Index extends React.Component<any, IndexState> {
       checkboxOption,
       conditionsSelectedList,
       lengthSelectedValue,
-      isModalOpened,
-      newPassword
+      isGenModalOpened,
+      newPassword,
+      isModModalOpened
     } = this.state
 
     return (
@@ -256,17 +301,47 @@ export default class Index extends React.Component<any, IndexState> {
         </AtButton>
 
         {/* modal框 */}
-        <AtModal isOpened={isModalOpened}
+        <AtModal isOpened={isGenModalOpened}
           onClose={this.closeModal.bind(this)}
         >
           {/* <AtModalHeader>标题</AtModalHeader> */}
           <AtModalContent>
-            {newPassword}
+            <View className='modalContent' id='pwd'>{newPassword}</View>
+            <AtInput
+              name='remark-gen'
+              title='备注:'
+              type='text'
+              placeholder='点击历史密码即可显示备注'
+              value={this.state.pwdRemark}
+              onChange={this.handleRemarkInput.bind(this)}
+              className='modalContent'
+            />
           </AtModalContent>
           <AtModalAction>
             <Button className='modalButton' onClick={this.closeModal.bind(this)}>取消</Button>
             <Button className='modalButton' onClick={this.handleGenOnceMore.bind(this)}>再来一次</Button>
             <Button className='modalButton' onClick={this.handleCopy.bind(this)}>复制</Button>
+          </AtModalAction>
+        </AtModal>
+
+        <AtModal isOpened={isModModalOpened}
+          onClose={this.closeModal.bind(this)}
+        >
+          {/* <AtModalHeader>标题</AtModalHeader> */}
+          <AtModalContent>
+            <AtInput
+              name='remake-mod'
+              title='备注:'
+              type='text'
+              placeholder='点击历史密码即可显示备注'
+              value={this.state.pwdRemark}
+              onChange={this.handleRemarkInput.bind(this)}
+              id='modInput'
+            />
+          </AtModalContent>
+          <AtModalAction>
+            <Button className='modalButton' onClick={this.closeModal.bind(this)}>取消</Button>
+            <Button className='modalButton' onClick={this.handleModifyRemark.bind(this)}>修改</Button>
           </AtModalAction>
         </AtModal>
       </View>

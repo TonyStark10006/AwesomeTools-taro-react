@@ -1034,7 +1034,7 @@
 
 "@babel/runtime@^7.11.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.7.7", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.15.4"
-  resolved "https://registry.nlark.com/@babel/runtime/download/@babel/runtime-7.15.4.tgz#fd17d16bfdf878e6dd02d19753a39fa8a8d9c84a"
+  resolved "https://registry.nlark.com/@babel/runtime/download/@babel/runtime-7.15.4.tgz?cache=0&sync_timestamp=1630618785994&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40babel%2Fruntime%2Fdownload%2F%40babel%2Fruntime-7.15.4.tgz#fd17d16bfdf878e6dd02d19753a39fa8a8d9c84a"
   integrity sha1-/RfRa/34eObdAtGXU6OfqKjZyEo=
   dependencies:
     regenerator-runtime "^0.13.4"
@@ -1579,7 +1579,7 @@
 
 "@types/webpack-env@^1.13.6":
   version "1.16.2"
-  resolved "https://registry.nlark.com/@types/webpack-env/download/@types/webpack-env-1.16.2.tgz#8db514b059c1b2ae14ce9d7bb325296de6a9a0fa"
+  resolved "https://registry.nlark.com/@types/webpack-env/download/@types/webpack-env-1.16.2.tgz?cache=0&sync_timestamp=1629709774945&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fwebpack-env%2Fdownload%2F%40types%2Fwebpack-env-1.16.2.tgz#8db514b059c1b2ae14ce9d7bb325296de6a9a0fa"
   integrity sha1-jbUUsFnBsq4Uzp17syUpbeapoPo=
 
 "@typescript-eslint/eslint-plugin@^4.15.1":
@@ -1609,7 +1609,7 @@
 
 "@typescript-eslint/parser@^4.15.1":
   version "4.31.2"
-  resolved "https://registry.npmmirror.com/@typescript-eslint/parser/download/@typescript-eslint/parser-4.31.2.tgz#54aa75986e3302d91eff2bbbaa6ecfa8084e9c34"
+  resolved "https://registry.npmmirror.com/@typescript-eslint/parser/download/@typescript-eslint/parser-4.31.2.tgz?cache=0&sync_timestamp=1632334560746&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40typescript-eslint%2Fparser%2Fdownload%2F%40typescript-eslint%2Fparser-4.31.2.tgz#54aa75986e3302d91eff2bbbaa6ecfa8084e9c34"
   integrity sha1-VKp1mG4zAtke/yu7qm7PqAhOnDQ=
   dependencies:
     "@typescript-eslint/scope-manager" "4.31.2"
@@ -4229,7 +4229,7 @@ eslint-plugin-react-hooks@^4.2.0:
 
 eslint-plugin-react@^7.8.2:
   version "7.26.0"
-  resolved "https://registry.nlark.com/eslint-plugin-react/download/eslint-plugin-react-7.26.0.tgz#3ae019a35d542b98e5af9e2f96b89c232c74b55b"
+  resolved "https://registry.nlark.com/eslint-plugin-react/download/eslint-plugin-react-7.26.0.tgz?cache=0&sync_timestamp=1632190257216&other_urls=https%3A%2F%2Fregistry.nlark.com%2Feslint-plugin-react%2Fdownload%2Feslint-plugin-react-7.26.0.tgz#3ae019a35d542b98e5af9e2f96b89c232c74b55b"
   integrity sha1-OuAZo11UK5jlr54vlricIyx0tVs=
   dependencies:
     array-includes "^3.1.3"
@@ -4289,7 +4289,7 @@ eslint-visitor-keys@^2.0.0:
 
 eslint@^6.8.0:
   version "6.8.0"
-  resolved "https://registry.nlark.com/eslint/download/eslint-6.8.0.tgz#62262d6729739f9275723824302fb227c8c93ffb"
+  resolved "https://registry.nlark.com/eslint/download/eslint-6.8.0.tgz?cache=0&sync_timestamp=1631313770716&other_urls=https%3A%2F%2Fregistry.nlark.com%2Feslint%2Fdownload%2Feslint-6.8.0.tgz#62262d6729739f9275723824302fb227c8c93ffb"
   integrity sha1-YiYtZylzn5J1cjgkMC+yJ8jJP/s=
   dependencies:
     "@babel/code-frame" "^7.0.0"
@@ -9465,7 +9465,7 @@ style-search@^0.1.0:
 
 stylelint@9.3.0:
   version "9.3.0"
-  resolved "https://registry.nlark.com/stylelint/download/stylelint-9.3.0.tgz#fe176e4e421ac10eac1a6b6d9f28e908eb58c5db"
+  resolved "https://registry.nlark.com/stylelint/download/stylelint-9.3.0.tgz?cache=0&sync_timestamp=1619867750186&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fstylelint%2Fdownload%2Fstylelint-9.3.0.tgz#fe176e4e421ac10eac1a6b6d9f28e908eb58c5db"
   integrity sha1-/hduTkIawQ6sGmttnyjpCOtYxds=
   dependencies:
     autoprefixer "^8.0.0"
@@ -9920,7 +9920,7 @@ typedarray@^0.0.6:
 
 typescript@^4.1.0:
   version "4.4.3"
-  resolved "https://registry.npmmirror.com/typescript/download/typescript-4.4.3.tgz#bdc5407caa2b109efd4f82fe130656f977a29324"
+  resolved "https://registry.npmmirror.com/typescript/download/typescript-4.4.3.tgz?cache=0&sync_timestamp=1632468264279&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Ftypescript%2Fdownload%2Ftypescript-4.4.3.tgz#bdc5407caa2b109efd4f82fe130656f977a29324"
   integrity sha1-vcVAfKorEJ79T4L+EwZW+XeikyQ=
 
 uglify-js@3.4.x:

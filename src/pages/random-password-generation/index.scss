@@ -3,7 +3,7 @@
   //   padding: 8px;
 }
 .button {
-  margin: 0 8px 0 8px;
+  margin: 0 8px;
 }
 .at-row {
   margin-bottom: 16px;
@@ -15,6 +15,23 @@
 .modalButton {
   margin-top: 0px;
   // width: auto;
+}
+
+.modalContent {
+  padding: 10px;
+  font-size: 32px;
+}
+.at-input__title {
+  width: auto;
+}
+.at-input {
+  margin-left: auto;
+}
+
+#pwd {
+  display: flex;
+  justify-content: center;
+  font-size: 40rpx;
 }
 
 // .container {
