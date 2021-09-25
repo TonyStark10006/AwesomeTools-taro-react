@@ -193,9 +193,9 @@ export default class Index extends React.Component<any, IndexState> {
   }
 
   private handleRemarkInput(value: string): void {
-    // TODO 
+    let filtered = value.replace(/<\/?.+?>/g, '')
     console.log(value);
-    this.setState({ pwdRemark: value })
+    this.setState({ pwdRemark: filtered })
     // console.log(document.getElementById('pwd'))
 
     // return value
