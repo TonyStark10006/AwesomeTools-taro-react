@@ -23,7 +23,9 @@
       "@models": ["src/models"],
       "@models/*": ["src/models/*"],
       "@utils": ["src/utils"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@state": ["src/state"],
+      "@state/*": ["src/state/*"]
     }
   },
   "exclude": ["node_modules", "dist"],

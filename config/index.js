@@ -14,7 +14,8 @@ const config = {
     // '@components': path.resolve(__dirname, '..', 'src/components'),
     // '@scss': path.resolve(__dirname, '..', 'src/scss'),
     '@utils': resolve(__dirname, '..', 'src/utils'),
-    '@models': resolve(__dirname, '..', 'src/models')
+    '@models': resolve(__dirname, '..', 'src/models'),
+    '@state': resolve(__dirname, '..', 'src/state')
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
