@@ -21,7 +21,6 @@ interface IndexState {
   isGenModalOpened: boolean
   isModModalOpened: boolean
   indexForModification: number
-  // conditions: any[]
 }
 
 @connect(({ cloudSyncSlice }) => ({ cloudSyncSlice }))
@@ -44,24 +43,6 @@ export default class Index extends React.Component<any, IndexState> {
     let windowHeight = Taro.getSystemInfoSync().windowHeight
 
     console.log(this.props);
-
-    // 获取云数据库的数据
-    Taro.cloud.init()
-    this.db = Taro.cloud.database()
-    let that = this
-    // this.cloudHistory =
-    this.db.collection('pwd_list')
-      .where({ _openid: '{openid}' })
-      .get()
-      .then((res) => {
-        if (res.data.length == 0) {
-          that.cloudHasHistory = false
-        } else {
-          // TODO
-          that.cloudHasHistory = true
-          that.cloudPwdlist = res.data
-        }
-      })
 
     this.state = {
       checkboxOption: [{
@@ -88,6 +69,26 @@ export default class Index extends React.Component<any, IndexState> {
       pwdRemark: '',
       indexForModification: 0
     }
+
+
+    // 获取云数据库的数据
+    Taro.cloud.init()
+    this.db = Taro.cloud.database()
+    let that = this
+    // this.cloudHistory =
+    this.db.collection('pwd_list')
+      .where({ _openid: '{openid}' })
+      .get()
+      .then((res) => {
+        let data = res.data[0].pwd_list
+        if (data.length == (0 || undefined)) {
+          that.cloudHasHistory = false
+        } else {
+          that.cloudHasHistory = true
+          if (that.state.pwdList.length == 0) that.setState({ pwdList: data })
+          cSetStorage('historyList', data)
+        }
+      })
   }
 
   componentWillMount() { }
@@ -173,7 +174,7 @@ export default class Index extends React.Component<any, IndexState> {
     cSetStorage('historyList', pwdList)
 
     // 同步密码到微信云数据库
-    if (this.props.cloudSyncSlice.sync) this.handlePwdlistCloudSync()
+    if (this.props.cloudSyncSlice.sync) this.handlePwdlistCloudSync(pwdList)
 
     // cloudList.then((res) => console.log(res), (res) => console.log(res))
 
@@ -199,6 +200,8 @@ export default class Index extends React.Component<any, IndexState> {
     this.setState({
       pwdList: pwdList
     })
+
+    this.handlePwdlistCloudSync(pwdList)
 
     cSetStorage('historyList', pwdList)
 
@@ -280,7 +283,7 @@ export default class Index extends React.Component<any, IndexState> {
     return list
   }
 
-  private handlePwdlistCloudSync(): void {
+  private handlePwdlistCloudSync(pwdList: Array<object> | []): void {
     // let _ = this.db.command
     let that = this
     this.cloudHasHistory ?
@@ -288,7 +291,7 @@ export default class Index extends React.Component<any, IndexState> {
         .where({ _openid: '{openid}' })
         .update({
           data: {
-            pwd_list: this.state.pwdList,
+            pwd_list: pwdList,
             update_time: new Date()
           }
         })
@@ -299,7 +302,7 @@ export default class Index extends React.Component<any, IndexState> {
       this.db.collection('pwd_list')
         .add({
           data: {
-            pwd_list: this.state.pwdList,
+            pwd_list: pwdList,
             update_time: new Date()
           }
         })
