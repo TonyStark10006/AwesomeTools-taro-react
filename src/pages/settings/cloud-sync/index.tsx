@@ -1,8 +1,8 @@
 import { Component } from 'react'
-import { Button, View } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import { View } from '@tarojs/components'
 import { AtForm, AtSwitch } from 'taro-ui'
 import { connect } from 'react-redux'
+import { cSetStorage } from '@utils'
 import './index.scss'
 
 
@@ -39,13 +39,18 @@ export default class CloudSync extends Component {
 
   componentDidHide() { }
 
+  private handleChange(): void {
+    this.props.sync()
+    cSetStorage('autoCloudSync', !this.props.cloudSyncSlice.sync)
+  }
+
   render() {
-    Taro.setStorageSync('setting', this.props.cloudSyncSlice.sync)
+    // Taro.setStorageSync('setting', this.props.cloudSyncSlice.sync)
 
     return (
       <View className='cloud-sync'>
         <AtForm>
-          <AtSwitch title='开启自动云同步' checked={this.props.cloudSyncSlice.sync} onChange={this.props.sync} />
+          <AtSwitch title='开启自动云同步' checked={this.props.cloudSyncSlice.sync} onChange={this.handleChange.bind(this)} />
         </AtForm>
       </View>
     )

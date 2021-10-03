@@ -7,6 +7,7 @@ import { CheckboxOption } from 'taro-ui/types/checkbox'
 import { cShowToast, cSetStorage, setPwdToClipBorad } from '@utils'
 // import { cSetStorage, setPwdToClipBorad } from '@utils/storage'
 import RandomPassword from '@models/RandomPassword'
+import { connect } from 'react-redux'
 import './index.scss'
 
 interface IndexState {
@@ -23,6 +24,7 @@ interface IndexState {
   // conditions: any[]
 }
 
+@connect(({ cloudSyncSlice }) => ({ cloudSyncSlice }))
 export default class Index extends React.Component<any, IndexState> {
 
   // public config: Taro.PageConfig = {
@@ -31,12 +33,35 @@ export default class Index extends React.Component<any, IndexState> {
   // eslint-disable-next-line react/sort-comp
   public lengthRange: number[] = [8, 10, 12, 14, 16]
   private randomPwdObj: RandomPassword = new RandomPassword()
+  private db: Taro.DB.Database
+  private cloudHasHistory: boolean
+  private cloudPwdlist: object[]
 
 
   constructor(props: any) {
     super(props)
     let historyList = Taro.getStorageSync('historyList')
     let windowHeight = Taro.getSystemInfoSync().windowHeight
+
+    console.log(this.props);
+
+    // 获取云数据库的数据
+    Taro.cloud.init()
+    this.db = Taro.cloud.database()
+    let that = this
+    // this.cloudHistory =
+    this.db.collection('pwd_list')
+      .where({ _openid: '{openid}' })
+      .get()
+      .then((res) => {
+        if (res.data.length == 0) {
+          that.cloudHasHistory = false
+        } else {
+          // TODO
+          that.cloudHasHistory = true
+          that.cloudPwdlist = res.data
+        }
+      })
 
     this.state = {
       checkboxOption: [{
@@ -118,6 +143,8 @@ export default class Index extends React.Component<any, IndexState> {
     // document.getElementsByTagName('scroll-view')[2].setAttribute('show-scrollbar', 'false')
     // console.log(document.getElementsByTagName('scroll-view'));
 
+    console.log(this.cloudHasHistory);
+
     if (this.state.conditionsSelectedList.length == 0) {
       cShowToast('请勾选密码组成条件')
       return
@@ -144,6 +171,11 @@ export default class Index extends React.Component<any, IndexState> {
 
     // 写入到缓存
     cSetStorage('historyList', pwdList)
+
+    // 同步密码到微信云数据库
+    if (this.props.cloudSyncSlice.sync) this.handlePwdlistCloudSync()
+
+    // cloudList.then((res) => console.log(res), (res) => console.log(res))
 
     //关闭modal
     this.closeModal()
@@ -248,6 +280,35 @@ export default class Index extends React.Component<any, IndexState> {
     return list
   }
 
+  private handlePwdlistCloudSync(): void {
+    // let _ = this.db.command
+    let that = this
+    this.cloudHasHistory ?
+      this.db.collection('pwd_list')
+        .where({ _openid: '{openid}' })
+        .update({
+          data: {
+            pwd_list: this.state.pwdList,
+            update_time: new Date()
+          }
+        })
+        .then(res1 => {
+          console.log(res1);
+        })
+      :
+      this.db.collection('pwd_list')
+        .add({
+          data: {
+            pwd_list: this.state.pwdList,
+            update_time: new Date()
+          }
+        })
+        .then(res1 => {
+          console.log(res1)
+          that.cloudHasHistory = true
+        })
+  }
+
   render() {
     let {
       windowHeight,
@@ -348,3 +409,5 @@ export default class Index extends React.Component<any, IndexState> {
     )
   }
 }
+
+// export default connect(({ cloudSyncSlice }) => ({ cloudSyncSlice }))(Index)
