@@ -30,7 +30,7 @@ export default class Settings extends Component {
           />
           <AtListItem title='云同步设置' note='同步密码到微信云' arrow='right' onClick={() => cNavigateTo('/pages/settings/cloud-sync/index')} />
         </AtList>
-        <Text id='version'>版本 1.0.1(210923)</Text>
+        <Text id='version'>版本 1.2.1(211004)</Text>
       </View>
     )
   }
