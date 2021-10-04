@@ -33,8 +33,9 @@ export default class Index extends React.Component<any, IndexState> {
   public lengthRange: number[] = [8, 10, 12, 14, 16]
   private randomPwdObj: RandomPassword = new RandomPassword()
   private db: Taro.DB.Database
+
+  // 没有初始化数据库数据，所以得加标识判断是add还是update数据
   private cloudHasHistory: boolean
-  private cloudPwdlist: object[]
 
 
   constructor(props: any) {
@@ -70,25 +71,32 @@ export default class Index extends React.Component<any, IndexState> {
       indexForModification: 0
     }
 
+    if (this.props.cloudSyncSlice.sync) {
+      // 获取云数据库的数据
+      Taro.cloud.init()
+      this.db = Taro.cloud.database()
+      let that = this
+      // this.cloudHistory =
+      this.db.collection('pwd_list')
+        .where({ _openid: '{openid}' })
+        .get()
+        .then((res) => {
+          // console.log(res)
+          // 判断是否有数据库记录，有则update否则add
+          let data = res.data//[0].pwd_list
+          if (data.length == 0 || data.length == undefined) {
+            that.cloudHasHistory = false
+          } else {
+            that.cloudHasHistory = true
+            // 本地数据为主，只要本地有数据都不会被云端数据覆盖，但是本地数据变化则会覆盖云端
+            if (that.state.pwdList.length == 0) {
+              that.setState({ pwdList: data[0].pwd_list })
+              cSetStorage('historyList', data[0].pwd_list)
+            }
+          }
+        })
+    }
 
-    // 获取云数据库的数据
-    Taro.cloud.init()
-    this.db = Taro.cloud.database()
-    let that = this
-    // this.cloudHistory =
-    this.db.collection('pwd_list')
-      .where({ _openid: '{openid}' })
-      .get()
-      .then((res) => {
-        let data = res.data[0].pwd_list
-        if (data.length == (0 || undefined)) {
-          that.cloudHasHistory = false
-        } else {
-          that.cloudHasHistory = true
-          if (that.state.pwdList.length == 0) that.setState({ pwdList: data })
-          cSetStorage('historyList', data)
-        }
-      })
   }
 
   componentWillMount() { }
@@ -165,7 +173,7 @@ export default class Index extends React.Component<any, IndexState> {
     let { newPassword, pwdRemark, pwdList } = this.state
     // 复制到粘贴板
     setPwdToClipBorad(newPassword)
-    console.log(pwdList);
+    // console.log(pwdList);
 
     // 写入到历史生成列表
     pwdList.push({ value: newPassword, remark: pwdRemark })
@@ -174,7 +182,7 @@ export default class Index extends React.Component<any, IndexState> {
     cSetStorage('historyList', pwdList)
 
     // 同步密码到微信云数据库
-    if (this.props.cloudSyncSlice.sync) this.handlePwdlistCloudSync(pwdList)
+    this.handlePwdlistCloudSync(pwdList)
 
     // cloudList.then((res) => console.log(res), (res) => console.log(res))
 
@@ -247,6 +255,9 @@ export default class Index extends React.Component<any, IndexState> {
     // 写入到历史生成列表
     pwdList[indexForModification].remark = pwdRemark
 
+    // 同步到云端
+    this.handlePwdlistCloudSync(pwdList)
+
     // 写入到缓存
     cSetStorage('historyList', pwdList)
 
@@ -285,31 +296,34 @@ export default class Index extends React.Component<any, IndexState> {
 
   private handlePwdlistCloudSync(pwdList: Array<object> | []): void {
     // let _ = this.db.command
-    let that = this
-    this.cloudHasHistory ?
-      this.db.collection('pwd_list')
-        .where({ _openid: '{openid}' })
-        .update({
-          data: {
-            pwd_list: pwdList,
-            update_time: new Date()
-          }
-        })
-        .then(res1 => {
-          console.log(res1);
-        })
-      :
-      this.db.collection('pwd_list')
-        .add({
-          data: {
-            pwd_list: pwdList,
-            update_time: new Date()
-          }
-        })
-        .then(res1 => {
-          console.log(res1)
-          that.cloudHasHistory = true
-        })
+    if (this.props.cloudSyncSlice.sync) {
+      let that = this
+      this.cloudHasHistory ?
+        this.db.collection('pwd_list')
+          .where({ _openid: '{openid}' })
+          .update({
+            data: {
+              pwd_list: pwdList,
+              update_time: new Date()
+            }
+          })
+          .then(res1 => {
+            console.log(res1);
+          })
+        :
+        this.db.collection('pwd_list')
+          .add({
+            data: {
+              pwd_list: pwdList,
+              update_time: new Date()
+            }
+          })
+          .then(res1 => {
+            console.log(res1)
+            that.cloudHasHistory = true
+          })
+    }
+
   }
 
   render() {

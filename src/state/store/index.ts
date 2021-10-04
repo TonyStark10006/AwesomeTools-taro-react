@@ -5,7 +5,7 @@ import rootSlices from '../reducers/rootReducer'
 
 // export const store = createStore(rootReducers)
 
-const localAutoCloudSync: boolean = Taro.getStorageSync('autoCloudSync')
+const localAutoCloudSync: any = Taro.getStorageSync('autoCloudSync')
 // var tasks: Promise<SuccessCallbackResult>[] = []
 
 // const localSettings = Taro.getStorage({ key: 'settings' })
@@ -19,7 +19,7 @@ const localAutoCloudSync: boolean = Taro.getStorageSync('autoCloudSync')
 // }
 
 export const sliceStore =
-  localAutoCloudSync == ('' || undefined)
+  localAutoCloudSync == false || localAutoCloudSync == undefined
     ? configureStore({ reducer: rootSlices })
     : configureStore({
         reducer: rootSlices,
