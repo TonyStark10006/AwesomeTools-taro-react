@@ -307,7 +307,7 @@ export default class Index extends React.Component<any, IndexState> {
           .update({
             data: {
               pwd_list: encryptedList,
-              update_time: new Date()
+              update_time: this.db.serverDate()
             }
           })
           .then(res1 => {
@@ -318,7 +318,7 @@ export default class Index extends React.Component<any, IndexState> {
           .add({
             data: {
               pwd_list: encryptedList,
-              update_time: new Date()
+              update_time: this.db.serverDate()
             }
           })
           .then(res1 => {
