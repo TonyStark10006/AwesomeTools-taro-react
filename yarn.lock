@@ -1497,6 +1497,11 @@
   resolved "https://registry.nlark.com/@types/archy/download/@types/archy-0.0.31.tgz#01650a4641e7e1d11dbd64eda42eec9a2f829c7f"
   integrity sha1-AWUKRkHn4dEdvWTtpC7smi+CnH8=
 
+"@types/crypto-js@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.nlark.com/@types/crypto-js/download/@types/crypto-js-4.0.2.tgz?cache=0&sync_timestamp=1629707142393&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fcrypto-js%2Fdownload%2F%40types%2Fcrypto-js-4.0.2.tgz#4524325a175bf819fec6e42560c389ce1fb92c97"
+  integrity sha1-RSQyWhdb+Bn+xuQlYMOJzh+5LJc=
+
 "@types/debug@^4.1.5":
   version "4.1.7"
   resolved "https://registry.nlark.com/@types/debug/download/@types/debug-4.1.7.tgz?cache=0&sync_timestamp=1629707134396&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fdebug%2Fdownload%2F%40types%2Fdebug-4.1.7.tgz#7cc0ea761509124709b8b2d1090d8f6c17aadb82"
@@ -3489,6 +3494,11 @@ crypto-browserify@^3.11.0:
     public-encrypt "^4.0.0"
     randombytes "^2.0.0"
     randomfill "^1.0.3"
+
+crypto-js@3.1.9-1:
+  version "3.1.9-1"
+  resolved "https://registry.nlark.com/crypto-js/download/crypto-js-3.1.9-1.tgz#fda19e761fc077e01ffbfdc6e9fdfc59e8806cd8"
+  integrity sha1-/aGedh/Ad+Af+/3G6f38WeiAbNg=
 
 css-color-keywords@^1.0.0:
   version "1.0.0"

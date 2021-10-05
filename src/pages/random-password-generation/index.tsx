@@ -8,6 +8,7 @@ import { cShowToast, cSetStorage, setPwdToClipBorad } from '@utils'
 // import { cSetStorage, setPwdToClipBorad } from '@utils/storage'
 import RandomPassword from '@models/RandomPassword'
 import { connect } from 'react-redux'
+import { decryptAESForJSONParse, encryptAESForJSONStringify } from '@utils/cryptojs'
 import './index.scss'
 
 interface IndexState {
@@ -40,7 +41,8 @@ export default class Index extends React.Component<any, IndexState> {
 
   constructor(props: any) {
     super(props)
-    let historyList = Taro.getStorageSync('historyList')
+    let localList = Taro.getStorageSync('historyList')
+    let historyList = localList == '' ? [] : decryptAESForJSONParse(localList)
     let windowHeight = Taro.getSystemInfoSync().windowHeight
 
     console.log(this.props);
@@ -90,7 +92,7 @@ export default class Index extends React.Component<any, IndexState> {
             that.cloudHasHistory = true
             // 本地数据为主，只要本地有数据都不会被云端数据覆盖，但是本地数据变化则会覆盖云端
             if (that.state.pwdList.length == 0) {
-              that.setState({ pwdList: data[0].pwd_list })
+              that.setState({ pwdList: decryptAESForJSONParse(data[0].pwd_list) })
               cSetStorage('historyList', data[0].pwd_list)
             }
           }
@@ -179,7 +181,7 @@ export default class Index extends React.Component<any, IndexState> {
     pwdList.push({ value: newPassword, remark: pwdRemark })
 
     // 写入到缓存
-    cSetStorage('historyList', pwdList)
+    cSetStorage('historyList', encryptAESForJSONStringify(pwdList))
 
     // 同步密码到微信云数据库
     this.handlePwdlistCloudSync(pwdList)
@@ -211,7 +213,7 @@ export default class Index extends React.Component<any, IndexState> {
 
     this.handlePwdlistCloudSync(pwdList)
 
-    cSetStorage('historyList', pwdList)
+    cSetStorage('historyList', encryptAESForJSONStringify(pwdList))
 
     // Array.prototype.remove = function (from, to) {
     //   var rest = this.slice((to || from) + 1 || this.length);
@@ -259,7 +261,7 @@ export default class Index extends React.Component<any, IndexState> {
     this.handlePwdlistCloudSync(pwdList)
 
     // 写入到缓存
-    cSetStorage('historyList', pwdList)
+    cSetStorage('historyList', encryptAESForJSONStringify(pwdList))
 
     //关闭modal
     this.closeModal()
@@ -298,12 +300,13 @@ export default class Index extends React.Component<any, IndexState> {
     // let _ = this.db.command
     if (this.props.cloudSyncSlice.sync) {
       let that = this
+      let encryptedList = encryptAESForJSONStringify(pwdList)
       this.cloudHasHistory ?
         this.db.collection('pwd_list')
           .where({ _openid: '{openid}' })
           .update({
             data: {
-              pwd_list: pwdList,
+              pwd_list: encryptedList,
               update_time: new Date()
             }
           })
@@ -314,7 +317,7 @@ export default class Index extends React.Component<any, IndexState> {
         this.db.collection('pwd_list')
           .add({
             data: {
-              pwd_list: pwdList,
+              pwd_list: encryptedList,
               update_time: new Date()
             }
           })

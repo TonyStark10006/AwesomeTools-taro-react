@@ -6,7 +6,7 @@
   "setting": {
     "urlCheck": true,
     "es6": false,
-    "enhance": true,
+    "enhance": false,
     "postcss": false,
     "preloadBackgroundData": false,
     "minified": false,
@@ -35,8 +35,10 @@
     "userConfirmedBundleSwitch": false,
     "packNpmManually": false,
     "packNpmRelationList": [],
-    "minifyWXSS": true,
-    "showES6CompileOption": false
+    "minifyWXSS": false,
+    "disableUseStrict": false,
+    "showES6CompileOption": false,
+    "useCompilerPlugins": false
   },
   "compileType": "miniprogram",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate",
