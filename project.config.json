@@ -1,5 +1,5 @@
 {
-  "miniprogramRoot": "dist/",
+  "miniprogramRoot": "dist/weapp/",
   "projectname": "awesome-tools",
   "description": "",
   "appid": "wx5f738a810934f16c",

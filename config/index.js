@@ -18,7 +18,7 @@ const config = {
     '@state': resolve(__dirname, '..', 'src/state')
   },
   sourceRoot: 'src',
-  outputRoot: 'dist',
+  outputRoot: `dist/${process.env.TARO_ENV}`,
   plugins: [],
   defineConstants: {},
   copy: {
