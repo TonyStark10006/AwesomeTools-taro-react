@@ -10,6 +10,7 @@ import RandomPassword from '@models/RandomPassword'
 import { connect } from 'react-redux'
 import { decryptAESForJSONParse, encryptAESForJSONStringify } from '@utils/cryptojs'
 import './index.scss'
+import weappLog from '@utils/log-weapp'
 
 interface IndexState {
   checkboxOption: CheckboxOption<string>[]
@@ -33,13 +34,17 @@ export default class Index extends React.Component<any, IndexState> {
   // eslint-disable-next-line react/sort-comp
   public lengthRange: number[] = [8, 10, 12, 14, 16]
   private randomPwdObj: RandomPassword = new RandomPassword()
+  private db: Taro.DB.Database
 
   // 没有初始化数据库数据，所以得加标识判断是add还是update数据
   private cloudHasHistory: boolean
 
-
   constructor(props: any) {
     super(props)
+    Taro.setNavigationBarTitle({
+      title: '随机密码生成'
+    })
+
     let localList = Taro.getStorageSync('historyList')
     let historyList = localList == '' ? [] : decryptAESForJSONParse(localList)
     let windowHeight = Taro.getSystemInfoSync().windowHeight
@@ -70,6 +75,35 @@ export default class Index extends React.Component<any, IndexState> {
       isModModalOpened: false,
       pwdRemark: '',
       indexForModification: 0
+    }
+
+    if (this.props.cloudSyncSlice.sync) {
+      // 获取云数据库的数据
+      Taro.cloud.init()
+      this.db = Taro.cloud.database()
+      let that = this
+      // this.cloudHistory =
+      this.db.collection('pwd_list')
+        .where({ _openid: '{openid}' })
+        .get()
+        .then((res) => {
+          // console.log(res)
+          // 判断是否有数据库记录，有则update否则add
+          let data = res.data//[0].pwd_list
+          if (data.length == 0 || data.length == undefined) {
+            that.cloudHasHistory = false
+          } else {
+            that.cloudHasHistory = true
+            // 本地数据为主，只要本地有数据都不会被云端数据覆盖，但是本地数据变化则会覆盖云端
+            if (that.state.pwdList.length == 0) {
+              that.setState({ pwdList: decryptAESForJSONParse(data[0].pwd_list) })
+              cSetStorage('historyList', data[0].pwd_list)
+            }
+          }
+        }).catch(error => {
+          weappLog.error(error)
+          console.log(error)
+        })
     }
 
   }
@@ -156,6 +190,9 @@ export default class Index extends React.Component<any, IndexState> {
     // 写入到缓存
     cSetStorage('historyList', encryptAESForJSONStringify(pwdList))
 
+    // 同步密码到微信云数据库
+    this.handlePwdlistCloudSync(pwdList)
+
     // cloudList.then((res) => console.log(res), (res) => console.log(res))
 
     //关闭modal
@@ -180,6 +217,8 @@ export default class Index extends React.Component<any, IndexState> {
     this.setState({
       pwdList: pwdList
     })
+
+    this.handlePwdlistCloudSync(pwdList)
 
     cSetStorage('historyList', encryptAESForJSONStringify(pwdList))
 
@@ -225,6 +264,9 @@ export default class Index extends React.Component<any, IndexState> {
     // 写入到历史生成列表
     pwdList[indexForModification].remark = pwdRemark
 
+    // 同步到云端
+    this.handlePwdlistCloudSync(pwdList)
+
     // 写入到缓存
     cSetStorage('historyList', encryptAESForJSONStringify(pwdList))
 
@@ -259,6 +301,43 @@ export default class Index extends React.Component<any, IndexState> {
         </View >)
     }
     return list
+  }
+
+  private handlePwdlistCloudSync(pwdList: Array<object> | []): void {
+    // let _ = this.db.command
+    if (this.props.cloudSyncSlice.sync) {
+      let that = this
+      let encryptedList = encryptAESForJSONStringify(pwdList)
+      this.cloudHasHistory ?
+        this.db.collection('pwd_list')
+          .where({ _openid: '{openid}' })
+          .update({
+            data: {
+              pwd_list: encryptedList,
+              update_time: this.db.serverDate()
+            }
+          })
+          .then(res1 => {
+            console.log(res1)
+          }).catch(res1 => {
+            weappLog.error(res1)
+          })
+        :
+        this.db.collection('pwd_list')
+          .add({
+            data: {
+              pwd_list: encryptedList,
+              update_time: this.db.serverDate()
+            }
+          })
+          .then(res1 => {
+            console.log(res1)
+            that.cloudHasHistory = true
+          }).catch(res1 => {
+            weappLog.error(res1)
+          })
+    }
+
   }
 
   render() {

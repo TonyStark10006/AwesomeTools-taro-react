@@ -8,7 +8,6 @@ import { cShowToast, cSetStorage, setPwdToClipBorad } from '@utils'
 // import { cSetStorage, setPwdToClipBorad } from '@utils/storage'
 import RandomPassword from '@models/RandomPassword'
 import { connect } from 'react-redux'
-import { decryptAESForJSONParse, encryptAESForJSONStringify } from '@utils/cryptojs'
 import './index.scss'
 
 interface IndexState {
@@ -40,11 +39,13 @@ export default class Index extends React.Component<any, IndexState> {
 
   constructor(props: any) {
     super(props)
-    let localList = Taro.getStorageSync('historyList')
-    let historyList = localList == '' ? [] : decryptAESForJSONParse(localList)
+    let historyList = Taro.getStorageSync('historyList')
     let windowHeight = Taro.getSystemInfoSync().windowHeight
 
-    console.log(this.props);
+    Taro.setNavigationBarTitle({
+      title: '随机密码生成'
+    })
+    console.log(this.props)
 
     this.state = {
       checkboxOption: [{
@@ -154,7 +155,7 @@ export default class Index extends React.Component<any, IndexState> {
     pwdList.push({ value: newPassword, remark: pwdRemark })
 
     // 写入到缓存
-    cSetStorage('historyList', encryptAESForJSONStringify(pwdList))
+    cSetStorage('historyList', pwdList)
 
     // cloudList.then((res) => console.log(res), (res) => console.log(res))
 
@@ -181,7 +182,7 @@ export default class Index extends React.Component<any, IndexState> {
       pwdList: pwdList
     })
 
-    cSetStorage('historyList', encryptAESForJSONStringify(pwdList))
+    cSetStorage('historyList', pwdList)
 
     // Array.prototype.remove = function (from, to) {
     //   var rest = this.slice((to || from) + 1 || this.length);
@@ -226,7 +227,7 @@ export default class Index extends React.Component<any, IndexState> {
     pwdList[indexForModification].remark = pwdRemark
 
     // 写入到缓存
-    cSetStorage('historyList', encryptAESForJSONStringify(pwdList))
+    cSetStorage('historyList', pwdList)
 
     //关闭modal
     this.closeModal()

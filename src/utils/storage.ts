@@ -1,4 +1,5 @@
 import Taro from '@tarojs/taro'
+import weappLog from './log-weapp'
 
 export const cSetStorage = (key: string, data: any): void => {
   Taro.setStorage({
@@ -6,6 +7,7 @@ export const cSetStorage = (key: string, data: any): void => {
     data: data,
     fail: res => {
       console.log(res)
+      process.env.TARO_ENV === 'weapp' && weappLog.error(res.errMsg)
     }
   })
 }
@@ -22,6 +24,7 @@ export const setPwdToClipBorad = (data: string): void => {
     },
     fail(res) {
       console.log(res)
+      process.env.TARO_ENV === 'weapp' && weappLog.error(res.errMsg)
     }
   })
 }
