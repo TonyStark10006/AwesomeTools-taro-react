@@ -8,9 +8,9 @@ import { cShowToast, cSetStorage, setPwdToClipBorad } from '@utils'
 // import { cSetStorage, setPwdToClipBorad } from '@utils/storage'
 import RandomPassword from '@models/RandomPassword'
 import { connect } from 'react-redux'
+import weappLog from '@utils/log'
 import { decryptAESForJSONParse, encryptAESForJSONStringify } from '@utils/cryptojs'
 import './index.scss'
-import weappLog from '@utils/log-weapp'
 
 interface IndexState {
   checkboxOption: CheckboxOption<string>[]

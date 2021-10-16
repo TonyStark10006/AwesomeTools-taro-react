@@ -1,5 +1,5 @@
 import Taro from '@tarojs/taro'
-import weappLog from './log-weapp'
+import weappLog from './log'
 
 export const cSetStorage = (key: string, data: any): void => {
   Taro.setStorage({
