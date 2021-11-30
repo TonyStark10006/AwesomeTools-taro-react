@@ -24,6 +24,14 @@ export default class Index extends Component<any, IndexState> {
           url: '/pages/random-password-generation/index'
         },
         {
+          value: '反馈',
+          iconInfo: {
+            size: 30,
+            value: 'help'
+          },
+          url: '/pages/settings/feedback/index'
+        },
+        {
           value: '设置',
           iconInfo: {
             size: 30,
