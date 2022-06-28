@@ -5,4 +5,5 @@
 
 #### snapshot
 
+![image](https://github.com/TonyStark10006/AwesomeTools-taro-react/raw/master/architecture.png)
 ![image](https://github.com/TonyStark10006/AwesomeTools-taro-react/raw/master/random-password.png)
